@@ -4,9 +4,7 @@
 
 #include "ShaderProgram.h"
 
-ShaderProgram::ShaderProgram(){
-    std::cout << "Calling super shader constructor" << std::endl;
-}
+ShaderProgram::ShaderProgram() = default;
 
 char *ShaderProgram::readFile(const char *filename) {
     // Open File

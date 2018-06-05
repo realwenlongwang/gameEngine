@@ -10,6 +10,6 @@ GLuint RawModel::getVao() const {
     return vao;
 }
 
-unsigned long RawModel::getVertexCount() const {
+GLsizei RawModel::getVertexCount() const {
     return vertexCount;
 }

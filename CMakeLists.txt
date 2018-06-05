@@ -14,6 +14,7 @@ include_directories(models)
 include_directories(textures)
 include_directories(shaders)
 include_directories(entities)
+include_directories(terrains)
 include_directories(${GLFW_INCLUDE_DIRS})
 
 set(
@@ -28,9 +29,9 @@ set(
 set(
         RENDER_ENGINE
         renderEngine/Loader.cpp renderEngine/Loader.h
-        renderEngine/Renderer.cpp renderEngine/Renderer.h
+        renderEngine/EntityRenderer.cpp renderEngine/EntityRenderer.h
         renderEngine/WindowManager.cpp renderEngine/WindowManager.h
-        renderEngine/OBJLoader.cpp renderEngine/OBJLoader.h renderEngine/MasterRenderer.cpp renderEngine/MasterRenderer.h)
+        renderEngine/OBJLoader.cpp renderEngine/OBJLoader.h renderEngine/MasterRenderer.cpp renderEngine/MasterRenderer.h renderEngine/TerrainRenderer.cpp renderEngine/TerrainRenderer.h)
 
 set(
         MODELS
@@ -44,16 +45,20 @@ set(
 
 set(
         SHADERS
-        shaders/ShaderProgram.cpp shaders/ShaderProgram.h shaders/StaticShader.cpp shaders/StaticShader.h)
+        shaders/ShaderProgram.cpp shaders/ShaderProgram.h shaders/StaticShader.cpp shaders/StaticShader.h shaders/TerrainShader.cpp shaders/TerrainShader.h)
 
 set(
         ENTITIES
         entities/Entity.cpp entities/Entity.h
         entities/Light.cpp entities/Light.h)
+set(
+        TERRAIN
+
+        terrains/Terrain.cpp terrains/Terrain.h)
 
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR})
 
-add_executable(waterRendering main.cpp ${RENDER_ENGINE} ${HELPER_LIBS} ${MODELS} ${TEXTURES} ${SHADERS} ${ENTITIES})
+add_executable(waterRendering main.cpp ${RENDER_ENGINE} ${HELPER_LIBS} ${MODELS} ${TEXTURES} ${SHADERS} ${ENTITIES} ${TERRAIN})
 
 target_link_libraries(waterRendering ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})

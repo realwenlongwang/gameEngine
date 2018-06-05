@@ -81,6 +81,14 @@ GLuint Loader::loadTexture(const char *fileName) {
     return texture;
 }
 
+GLuint Loader::loadTerrainTexture(const char *fileName) {
+    int width, height, channel;
+    GLuint texture = 0;
+    texture = image::loadTerrainTexture(fileName, width, height, channel);
+    textures.push_back(texture);
+    return texture;
+}
+
 GLuint Loader::loadCubeMap(const char **fileNames) {
     int width, height, channel;
     GLuint cubeMap = 0;
@@ -88,6 +96,8 @@ GLuint Loader::loadCubeMap(const char **fileNames) {
     textures.push_back(cubeMap);
     return cubeMap;
 }
+
+
 
 
 

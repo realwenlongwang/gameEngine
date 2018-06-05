@@ -120,6 +120,63 @@ GLuint image::loadTexture2D(const char *filename, int &width, int &height, int &
 	return texture;
 }
 
+GLuint image::loadTerrainTexture(const char *filename, int &width, int &height, int &n) {
+	// ----------------------------------------
+	// Load Texture Map from file
+	unsigned char *image = loadImage(filename, width, height, n, true);
+
+	// Check image result
+	if(image == NULL) {
+		// Return error
+		return 0;
+	}
+
+	// Texture
+	GLuint texture;
+
+	// Generate texture
+	glGenTextures(1, &texture);
+
+	// Bind texture
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	//int max_levels = glm::max(glm::log2(width), glm::log2(height));
+	int levels_x = (int)glm::log2((float)width);
+	int levels_y = (int)glm::log2((float)height);
+	int max_levels = glm::max(levels_x, levels_y);
+
+	// ------------------------------
+	// Mip-Mapping
+	// ------------------------------
+	// Set storage - log_2(image size)
+	glTexStorage2D(GL_TEXTURE_2D, max_levels, GL_RGBA8, width, height);
+
+	// Copy image data into texture
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
+
+	// Generate Mipmap
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	// Configure texture
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// Configure Texture Coordinate Wrapping
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_REPEAT);
+
+	// ------------------------------
+	// Unbind texture
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	// Delete image data
+	delete[] image;
+	image = NULL;
+
+	// Return Texture
+	return texture;
+}
+
 // Load a CubeMap Texture from file
 GLuint image::loadTextureCubeMap(const char *filename[6], int &width, int &height, int &n) {
 	// Texture

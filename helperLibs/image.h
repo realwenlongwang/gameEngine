@@ -43,6 +43,9 @@ namespace image {
 // Load a 2D Texture from file
 	GLuint loadTexture2D(const char *filename, int &x, int &y, int &n);
 
+// Load a Terrain Texture from file
+	GLuint loadTerrainTexture(const char *filename, int &width, int &height, int &n);
+
 // Load a CubeMap Texture from file
 	GLuint loadTextureCubeMap(const char *filename[6], int &x, int &y, int &n);
 }

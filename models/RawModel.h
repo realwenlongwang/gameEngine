@@ -36,11 +36,11 @@ public:
 
     GLuint getVao() const;
 
-    unsigned long getVertexCount() const;
+    GLsizei getVertexCount() const;
 
 private:
     GLuint vao;
-    unsigned long vertexCount;
+    GLsizei vertexCount;
 };
 
 

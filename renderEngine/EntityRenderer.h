@@ -2,8 +2,8 @@
 // Created by Wenlong Wang on 2/06/18.
 //
 
-#ifndef WATERRENDERING_RENDERER_H
-#define WATERRENDERING_RENDERER_H
+#ifndef WATERRENDERING_ENTITYRENDERER_H
+#define WATERRENDERING_ENTITYRENDERER_H
 
 #include <map>
 #include <vector>
@@ -43,23 +43,21 @@
 #include "Entity.h"
 #include "StaticShader.h"
 
-class Renderer {
+class EntityRenderer {
 public:
     void render(std::map<TexturedModel, std::vector<Entity>, TexturedModelCompare> entityMap);
-    void prepare();
-    Renderer(StaticShader staticShader);
+    EntityRenderer(StaticShader staticShader);
 private:
-    float FIELD_OF_VIEW = 67.0f;
-    float NEAR_PLANE = 0.2f;
-    float FAR_PLANE = 50.0f;
     glm::mat4 projectionMatrix;
     StaticShader shader;
 
-    void initProjectionMatrix();
     void prepareTexturedModel(TexturedModel texturedModel);
     void unbindTexturedModel();
     void prepareInstance(Entity entity);
+
+public:
+    void setProjectionMatrix(const glm::mat4 &projectionMatrix);
 };
 
 
-#endif //WATERRENDERING_RENDERER_H
+#endif //WATERRENDERING_ENTITYRENDERER_H

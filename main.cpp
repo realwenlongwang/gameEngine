@@ -99,6 +99,7 @@ int main() {
     modelTexture.setShineDamper(10);
     TexturedModel texturedModel(rawModel, modelTexture);
     Entity entity(texturedModel, glm::vec3(0, 0, -5), glm::vec3(0, 0, 0), 1);
+    Terrain terrain(0, 0, loader, ModelTexture(loader.loadTerrainTexture("res/grass.jpg")));
     Light light(glm::vec3(0, 0, 20), glm::vec3(1));
 
     MasterRenderer masterRenderer;
@@ -118,6 +119,7 @@ int main() {
 
         camera->update(dt);
 
+        masterRenderer.processTerrain(terrain);
         masterRenderer.processEntity(entity);
         masterRenderer.render(light, camera);
 

@@ -1,24 +1,21 @@
 //
-// Created by Wenlong Wang on 4/06/18.
+// Created by Wenlong Wang on 5/06/18.
 //
 
-#ifndef WATERRENDERING_STATICSHADER_H
-#define WATERRENDERING_STATICSHADER_H
+#ifndef WATERRENDERING_TERRAINSHADER_H
+#define WATERRENDERING_TERRAINSHADER_H
 
-#include <map>
 #include "ShaderProgram.h"
 #include "Light.h"
-/**
- * Implementation of ShaderProgram class
- */
-class StaticShader : public ShaderProgram{
+
+class TerrainShader: public ShaderProgram {
 protected:
     void bindAttributes() override;
 
     void getAllUniformLocation() override;
 
 public:
-    StaticShader();
+    TerrainShader();
     void loadTransformationMatrix(glm::mat4 translationMatrix);
     void loadProjectionMatrix(glm::mat4 projectionMatrix);
     void loadViewMatrix(glm::mat4 viewMatrix);
@@ -26,12 +23,10 @@ public:
     void loadShineVariables(float damper, float reflectivity);
 
 private:
-    constexpr static const char* VERTEX_FILE = "shaders/vert.glsl";
-    constexpr static const char* FRAGMENT_FILE = "shaders/frag.glsl";
+    constexpr static const char* VERTEX_FILE = "shaders/vert.terrain.glsl";
+    constexpr static const char* FRAGMENT_FILE = "shaders/frag.terrain.glsl";
     std::map<const char*, GLint> uniformLocations;
-
-
 };
 
 
-#endif //WATERRENDERING_STATICSHADER_H
+#endif //WATERRENDERING_TERRAINSHADER_H
