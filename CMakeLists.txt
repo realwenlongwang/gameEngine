@@ -15,6 +15,9 @@ include_directories(textures)
 include_directories(shaders)
 include_directories(entities)
 include_directories(terrains)
+include_directories(skybox)
+include_directories(water)
+include_directories(gui)
 include_directories(${GLFW_INCLUDE_DIRS})
 
 set(
@@ -31,7 +34,7 @@ set(
         renderEngine/Loader.cpp renderEngine/Loader.h
         renderEngine/EntityRenderer.cpp renderEngine/EntityRenderer.h
         renderEngine/WindowManager.cpp renderEngine/WindowManager.h
-        renderEngine/OBJLoader.cpp renderEngine/OBJLoader.h renderEngine/MasterRenderer.cpp renderEngine/MasterRenderer.h renderEngine/TerrainRenderer.cpp renderEngine/TerrainRenderer.h)
+        renderEngine/OBJLoader.cpp renderEngine/OBJLoader.h renderEngine/MasterRenderer.cpp renderEngine/MasterRenderer.h terrains/TerrainRenderer.cpp terrains/TerrainRenderer.h)
 
 set(
         MODELS
@@ -45,7 +48,7 @@ set(
 
 set(
         SHADERS
-        shaders/ShaderProgram.cpp shaders/ShaderProgram.h shaders/StaticShader.cpp shaders/StaticShader.h shaders/TerrainShader.cpp shaders/TerrainShader.h)
+        shaders/ShaderProgram.cpp shaders/ShaderProgram.h shaders/StaticShader.cpp shaders/StaticShader.h terrains/TerrainShader.cpp terrains/TerrainShader.h)
 
 set(
         ENTITIES
@@ -55,10 +58,23 @@ set(
         TERRAIN
 
         terrains/Terrain.cpp terrains/Terrain.h)
+set(
+        SKYBOX
+        skybox/SkyboxShader.cpp skybox/SkyboxShader.h skybox/SkyboxRenderer.cpp skybox/SkyboxRenderer.h skybox/Skybox.cpp skybox/Skybox.h)
+
+set(
+        WATER
+
+        water/WaterFrameBuffers.cpp water/WaterFrameBuffers.h water/Water.cpp water/Water.h water/WaterShader.cpp water/WaterShader.h water/WaterRenderer.cpp water/WaterRenderer.h)
+
+set(
+        GUI
+
+        gui/GuiTxeture.cpp gui/GuiTxeture.h)
 
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR})
 
-add_executable(waterRendering main.cpp ${RENDER_ENGINE} ${HELPER_LIBS} ${MODELS} ${TEXTURES} ${SHADERS} ${ENTITIES} ${TERRAIN})
+add_executable(waterRendering main.cpp ${RENDER_ENGINE} ${HELPER_LIBS} ${MODELS} ${TEXTURES} ${SHADERS} ${ENTITIES} ${TERRAIN} ${SKYBOX} ${WATER} ${GUI})
 
 target_link_libraries(waterRendering ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})

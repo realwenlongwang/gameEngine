@@ -2,6 +2,7 @@
   <dictionary name="Stan">
     <words>
       <w>shaders</w>
+      <w>skybox</w>
     </words>
   </dictionary>
 </component>

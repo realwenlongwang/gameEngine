@@ -16,6 +16,8 @@ public:
     void cleanUp();
 
 private:
+    int width;
+    int height;
     std::vector<GLFWwindow*> windows;
 
     void prepare();

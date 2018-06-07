@@ -10,9 +10,17 @@ Loader::loadToVAO(std::vector<glm::ivec3> indices, std::vector<glm::vec4> vertic
                   std::vector<glm::vec4> normals) {
     GLuint vao = initialiseVAO();
     bindIndicesBuffer(indices);
-    bindVerticesBuffer(vertices, 0);
-    bindVerticesBuffer(uvs, 1);
-    bindVerticesBuffer(normals, 2);
+    bindVerticesBuffer(std::move(vertices), 0, 4);
+    bindVerticesBuffer(std::move(uvs), 1, 4);
+    bindVerticesBuffer(std::move(normals), 2, 4);
+    unbindObjects();
+    return {vao, indices.size() * 3};
+}
+
+RawModel Loader::loadToVAO(std::vector<glm::ivec3> indices, std::vector<glm::vec4> vertices) {
+    GLuint vao = initialiseVAO();
+    bindIndicesBuffer(indices);
+    bindVerticesBuffer(std::move(vertices), 0, 4);
     unbindObjects();
     return {vao, indices.size() * 3};
 }
@@ -41,7 +49,7 @@ void Loader::bindIndicesBuffer(std::vector<glm::ivec3> indices) {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(glm::ivec3), indices.data(), GL_STATIC_DRAW);
 }
 
-void Loader::bindVerticesBuffer(std::vector<glm::vec4> vertices, GLuint attributeLocation) {
+void Loader::bindVerticesBuffer(std::vector<glm::vec4> vertices, GLuint attributeLocation, int dimension) {
     GLuint vbo = 0;
     // Create VBO
     glGenBuffers(1, &vbo);
@@ -52,7 +60,7 @@ void Loader::bindVerticesBuffer(std::vector<glm::vec4> vertices, GLuint attribut
     // Load vertex data
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec4), vertices.data(), GL_STATIC_DRAW);
     // Set vertex attribute pointers
-    glVertexAttribPointer(attributeLocation, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+    glVertexAttribPointer(attributeLocation, dimension, GL_FLOAT, GL_FALSE, 0, NULL);
     // Enable vertex attribute arrays
     glEnableVertexAttribArray(attributeLocation);
 
@@ -96,6 +104,8 @@ GLuint Loader::loadCubeMap(const char **fileNames) {
     textures.push_back(cubeMap);
     return cubeMap;
 }
+
+
 
 
 

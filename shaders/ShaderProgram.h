@@ -44,7 +44,6 @@
 class ShaderProgram {
 
 public:
-    ShaderProgram();
     virtual ~ShaderProgram();
 
     void start();
@@ -64,6 +63,7 @@ protected:
                      const char *frag_file);
     void loadFloat(GLint location, float value);
     void loadVec3(GLint location, glm::vec3 value);
+    void loadVec4(GLint location, glm::vec4 value);
     void loadBoolean(GLint location, bool value);
     void loadMatrix(GLint location, glm::mat4 matrix);
 private:

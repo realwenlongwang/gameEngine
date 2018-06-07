@@ -23,8 +23,8 @@ public:
     void loadShineVariables(float damper, float reflectivity);
 
 private:
-    constexpr static const char* VERTEX_FILE = "shaders/vert.terrain.glsl";
-    constexpr static const char* FRAGMENT_FILE = "shaders/frag.terrain.glsl";
+    constexpr static const char* VERTEX_FILE = "shaders/terrain.vert.glsl";
+    constexpr static const char* FRAGMENT_FILE = "shaders/terrain.frag.glsl";
     std::map<const char*, GLint> uniformLocations;
 };
 

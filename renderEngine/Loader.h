@@ -7,6 +7,7 @@
 
 // System Header
 #include <vector>
+#include <utility>
 
 // OpenGL Headers
 #if defined(_WIN32)
@@ -46,6 +47,7 @@ class Loader {
 public:
     RawModel loadToVAO(std::vector<glm::ivec3> indices, std::vector<glm::vec4> vertices, std::vector<glm::vec4> uvs,
                            std::vector<glm::vec4> normals);
+    RawModel loadToVAO(std::vector<glm::ivec3> indices, std::vector<glm::vec4> vertices);
     GLuint loadTexture(const char* fileName);
     GLuint loadTerrainTexture(const char* fileName);
     GLuint loadCubeMap(const char* fileNames[6]);
@@ -66,7 +68,7 @@ private:
 
     GLuint initialiseVAO();
     void bindIndicesBuffer(std::vector<glm::ivec3> indices);
-    void bindVerticesBuffer(std::vector<glm::vec4> vertices, GLuint attributeLocation);
+    void bindVerticesBuffer(std::vector<glm::vec4> vertices, GLuint attributeLocation, int dimension);
     void unbindObjects();
 };
 

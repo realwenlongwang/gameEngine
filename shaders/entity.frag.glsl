@@ -22,7 +22,7 @@ void main () {
     // Do the dot production to calculate the angle between 2 vectors
     float normalDotLight = dot(unitNormal, unitTowardsLight);
     // Make sure result is above 0.1 which is our ambient light
-    float brightness = max(normalDotLight, 0.1f);
+    float brightness = max(normalDotLight, 0.0f);
     vec3 diffuse = brightness * lightColour;
 
     // Light direction is just opposite vector towards light
@@ -42,6 +42,6 @@ void main () {
 	//----------------------------------------------
 	pixel_Colour = texture(textureSampler, frag_UV.xy);
 	pixel_Colour = vec4(vec3(1.0), 0.0);
-	//TODO: Here need to muptiply by the texture
-	pixel_Colour = vec4(diffuse, 1) *  + vec4(finalSpecular, 1.0f);
+	//TODO: Here need to muptiply by the texture, later can change to phone lighting
+	pixel_Colour = vec4(diffuse, 1.0f)  + vec4(finalSpecular, 1.0f);
 }

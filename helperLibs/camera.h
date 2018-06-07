@@ -50,6 +50,7 @@ public:
 
 	// Camera View Matrix
 	virtual glm::mat4 getViewMatrix() = 0;
+	virtual glm::mat4 getOrientationMatrix() = 0;
 
 	// GLFW Input
 	virtual void onMouseButton(GLFWwindow *window, int button, int action, int mods) = 0;
@@ -73,6 +74,7 @@ public:
 
 	// Camera View Matrix
 	glm::mat4 getViewMatrix();
+	glm::mat4 getOrientationMatrix();
 
 	// GLFW Input
 	void onMouseButton(GLFWwindow *window, int button, int action, int mods);

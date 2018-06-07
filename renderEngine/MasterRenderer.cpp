@@ -10,9 +10,14 @@ void MasterRenderer::cleanUp() {
     terrainShader.cleanUp();
 }
 
-void MasterRenderer::render(Light light, Camera *camera) {
+void MasterRenderer::render(Light light, Camera *camera, glm::vec4 clipPlane) {
     prepare();
+    skyboxShader.start();
+    skyboxShader.loadViewMatrix(camera->getOrientationMatrix());
+    skyboxRenderer.render(skybox);
+    skyboxShader.stop();
     staticShader.start();
+    staticShader.loadClipPlane(clipPlane);
     staticShader.loadLight(light);
     staticShader.loadViewMatrix(camera->getViewMatrix());
     entityRenderer.render(entityMap);
@@ -51,14 +56,33 @@ void MasterRenderer::initProjectionMatrix() {
     projectionMatrix = glm::perspective(glm::radians(FIELD_OF_VIEW), 1.0f, NEAR_PLANE, FAR_PLANE);
 }
 
-MasterRenderer::MasterRenderer(): entityRenderer(staticShader), terrainRenderer(terrainShader) {
+MasterRenderer::MasterRenderer(const Loader &loader)
+        : entityRenderer(staticShader), terrainRenderer(terrainShader), skyboxRenderer(skyboxShader), skybox(loader) {
     glEnable(GL_CULL_FACE);
     glEnable(GL_BACK);
     initProjectionMatrix();
     entityRenderer.setProjectionMatrix(projectionMatrix);
     terrainRenderer.setProjectionMatrix(projectionMatrix);
+    skyboxRenderer.setProjectMatrix(projectionMatrix);
 }
 
 void MasterRenderer::processTerrain(Terrain terrain) {
     terrains.push_back(terrain);
+}
+
+void MasterRenderer::renderScene(std::vector<Entity> entities, std::vector<Terrain> terrains, Light light,
+                                 Camera *camera, glm::vec4 clipPlane) {
+    for(Terrain terrain: terrains) {
+        processTerrain(terrain);
+    }
+
+    for(Entity entity: entities) {
+        processEntity(entity);
+    }
+
+    render(light, camera, clipPlane);
+}
+
+const glm::mat4 &MasterRenderer::getProjectionMatrix() const {
+    return projectionMatrix;
 }

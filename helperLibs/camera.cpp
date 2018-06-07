@@ -10,7 +10,7 @@ FreeLookCamera::FreeLookCamera(GLFWwindow *window) : Camera(window) {
 	mOrientation = glm::quat(1, 0, 0, 0);
 
 	// Position
-	mPosition = glm::vec3(0, 5, 10);
+	mPosition = glm::vec3(0, 7, 10);
 
 	// Camera Speed
 	mSpeed = 10.0;
@@ -27,6 +27,16 @@ glm::mat4 FreeLookCamera::getViewMatrix() {
 
 	// Generate View Matrix
 	return glm::lookAt(mPosition, mPosition + forward, up);
+}
+
+// Camera Orientation Matrix
+glm::mat4 FreeLookCamera::getOrientationMatrix() {
+	// Generate Forward, Right, Up Vectors
+	glm::vec3 forward = glm::vec3(mOrientation * glm::vec4( 0,  0, -1,  0));
+	glm::vec3 up      = glm::vec3(mOrientation * glm::vec4( 0,  1,  0,  0));
+
+	// Generate View Matrix
+	return glm::lookAt(glm::vec3(0,0,0), forward, up);
 }
 
 // GLFW Input

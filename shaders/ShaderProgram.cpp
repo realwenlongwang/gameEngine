@@ -4,8 +4,6 @@
 
 #include "ShaderProgram.h"
 
-ShaderProgram::ShaderProgram() = default;
-
 char *ShaderProgram::readFile(const char *filename) {
     // Open File
     std::ifstream input(filename);
@@ -301,6 +299,10 @@ void ShaderProgram::loadVec3(GLint location, glm::vec3 value) {
     glUniform3f(location, value.x, value.y, value.z);
 }
 
+void ShaderProgram::loadVec4(GLint location, glm::vec4 value) {
+    glUniform4f(location, value.x, value.y, value.z, value.w);
+}
+
 void ShaderProgram::loadBoolean(GLint location, bool value) {
     float toLoad = 0.0f;
     if(value) {
@@ -313,3 +315,4 @@ void ShaderProgram::loadBoolean(GLint location, bool value) {
 void ShaderProgram::loadMatrix(GLint location, glm::mat4 matrix) {
     glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
+

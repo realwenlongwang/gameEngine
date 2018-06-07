@@ -42,6 +42,9 @@
 #include "OBJLoader.h"
 #include "Light.h"
 #include "MasterRenderer.h"
+#include "WaterFrameBuffers.h"
+#include "WaterRenderer.h"
+
 
 // Camera
 Camera *camera;
@@ -83,53 +86,72 @@ int main() {
     // ----------------------------------------
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-
+//    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // ----------------------------------------
     // Create object
     // ----------------------------------------
-    std::vector<glm::vec4> positionBuffer;
-    std::vector<glm::vec4> texturedBuffer;
-    std::vector<glm::ivec3> indices;
-
-
     RawModel rawModel = objLoader.loadObjModel("res/dragon.obj", loader);
     ModelTexture modelTexture(loader.loadTexture("res/brick_diff.tga"));
     modelTexture.setReflectivity(1);
     modelTexture.setShineDamper(10);
     TexturedModel texturedModel(rawModel, modelTexture);
     Entity entity(texturedModel, glm::vec3(0, 0, -5), glm::vec3(0, 0, 0), 1);
-    Terrain terrain(0, 0, loader, ModelTexture(loader.loadTerrainTexture("res/grass.jpg")));
-    Light light(glm::vec3(0, 0, 20), glm::vec3(1));
+    Terrain terrain(- 0.1f, -0.1f, loader, ModelTexture(loader.loadTerrainTexture("res/grass.jpg")));
+    WaterShader waterShader;
+    Water waterTile(1, 40, -40);
 
-    MasterRenderer masterRenderer;
+
+
+    // Container
+    std::vector<Entity> entities;
+    std::vector<Terrain> terrains;
+    std::vector<Water> water;
+
+    entities.push_back(entity);
+    terrains.push_back(terrain);
+    water.push_back(waterTile);
+
+    WaterFrameBuffers waterFrameBuffers;
+
+    Light light(glm::vec3(0, 0, 5), glm::vec3(1));
+
+    MasterRenderer masterRenderer(loader);
+    WaterRenderer waterRenderer(loader, waterShader);
+    waterRenderer.setProjectionMatrix(masterRenderer.getProjectionMatrix());
 
     float time = glfwGetTime();
 
     while (!glfwWindowShouldClose(window)) {
         // Make the context of the given window current on the calling thread
         glfwMakeContextCurrent(window);
-
         // Update Time
         float current_time = glfwGetTime();
         float dt = current_time - time;
         time = current_time;
 
-//        entity.increaseRotation(0, dt, 0);
+        // Enable the clip planes
+        glEnable(GL_CLIP_DISTANCE0);
 
+//        entity.increaseRotation(0, dt, 0);
         camera->update(dt);
 
-        masterRenderer.processTerrain(terrain);
-        masterRenderer.processEntity(entity);
-        masterRenderer.render(light, camera);
+        waterFrameBuffers.bindReflectionFrameBuffer();
+        masterRenderer.renderScene(entities, terrains, light, camera, glm::vec4(0, -1, 0, 15));
+        waterFrameBuffers.unbindCurrentFrameBuffer();
+
+        masterRenderer.renderScene(entities, terrains, light, camera, glm::vec4(0, -1, 0, 5));
+        waterRenderer.render(water, camera);
 
         // Swap the back and front buffers
         glfwSwapBuffers(window);
 
         // Poll window events
         glfwPollEvents();
-    }
 
+    }
+    waterShader.cleanUp();
+    waterFrameBuffers.cleanUp();
     masterRenderer.cleanUp();
     loader.cleanUp();
     windowManager.cleanUp();

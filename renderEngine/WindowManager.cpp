@@ -18,7 +18,8 @@ GLFWwindow* WindowManager::createWindow(int width, int height, const char *title
     prepare();
     GLFWwindow *window = utils::createWindow(width, height, title, major, minor, monitor, share);
     if(window == nullptr) {
-        throw "create window or context failed!";
+        std::cerr << "Creating window failed!" << std::endl;
+        exit(0);
     }
     windows.push_back(window);
     // Anti aliasing
@@ -32,7 +33,8 @@ GLFWwindow* WindowManager::createWindow(int width, int height, const char *title
 // Called on Error Event
 void onError(int error, const char *description) {
     // Throw Error message
-    throw description;
+    std::cerr << "Error " << error << ": " << description << std::endl;
+    exit(0);
 }
 
 // Called on Window Close Event

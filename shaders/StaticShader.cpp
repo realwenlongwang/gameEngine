@@ -32,6 +32,7 @@ void StaticShader::getAllUniformLocation() {
         uniformLocations.emplace("lightColour", getUniformLocation("lightColour"));
         uniformLocations.emplace("shineDamper", getUniformLocation("shineDamper"));
         uniformLocations.emplace("reflectivity", getUniformLocation("reflectivity"));
+        uniformLocations.emplace("plane", getUniformLocation("u_plane"));
     } catch (std::invalid_argument& e) {
         std::cerr << __PRETTY_FUNCTION__ << ": Catch the exception" << std::endl;
         std::cerr << e.what() << std::endl;
@@ -62,5 +63,10 @@ void StaticShader::loadLight(Light light) {
 void StaticShader::loadShineVariables(float damper, float reflectivity) {
     ShaderProgram::loadFloat(uniformLocations["shineDamper"], damper);
     ShaderProgram::loadFloat(uniformLocations["reflectivity"], reflectivity);
+
+}
+
+void StaticShader::loadClipPlane(glm::vec4 plane) {
+    ShaderProgram::loadVec4(uniformLocations["plane"], plane);
 
 }

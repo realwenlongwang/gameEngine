@@ -15,29 +15,37 @@
 #include "Light.h"
 #include "camera.h"
 #include "TerrainRenderer.h"
+#include "SkyboxRenderer.h"
 
 
 class MasterRenderer {
 public:
     void cleanUp();
-    void render(Light light, Camera* camera);
+    void renderScene(std::vector<Entity> entities, std::vector<Terrain> terrains, Light light,
+                     Camera *camera, glm::vec4 clipPlane);
+    void render(Light light, Camera *camera, glm::vec4 clipPlane);
     void processEntity(Entity entity);
     void processTerrain(Terrain terrain);
 
-    MasterRenderer();
+    const glm::mat4 &getProjectionMatrix() const;
+
+    MasterRenderer(const Loader &loader);
 
 private:
     float FIELD_OF_VIEW = 67.0f;
     float NEAR_PLANE = 0.2f;
-    float FAR_PLANE = 50.0f;
+    float FAR_PLANE = 500.0f;
     glm::mat4 projectionMatrix;
 
     StaticShader staticShader;
     TerrainShader terrainShader;
+    SkyboxShader skyboxShader;
     EntityRenderer entityRenderer;
     TerrainRenderer terrainRenderer;
+    SkyboxRenderer skyboxRenderer;
     std::map<TexturedModel, std::vector<Entity>, TexturedModelCompare> entityMap;
     std::vector<Terrain> terrains;
+    Skybox skybox;
     void initProjectionMatrix();
     void prepare();
 };

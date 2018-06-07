@@ -41,7 +41,6 @@ void main () {
 	// Fragment Colour
 	//----------------------------------------------
 	pixel_Colour = texture(textureSampler, frag_UV.xy);
-//	pixel_Colour = vec4(vec3(1.0), 0.0);
 	//TODO: Here need to muptiply by the texture
 //	pixel_Colour = vec4(diffuse, 1) * texture(textureSampler, frag_UV.xy) + vec4(finalSpecular, 1.0f);
 }

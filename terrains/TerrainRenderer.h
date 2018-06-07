@@ -22,7 +22,6 @@ private:
 
     void unbindTexturedModel();
 
-
     void loadTranslationMatrix(Terrain terrain);
 };
 

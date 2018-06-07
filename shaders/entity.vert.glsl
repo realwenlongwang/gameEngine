@@ -18,12 +18,21 @@ out vec4 frag_Normal;
 out vec3 frag_TowardsLight;
 out vec3 frag_towardsCamera;
 
+// Horizontal plane, (A, B, C, D) "A, B ,C is the normal of plane" "D is the height of plane"
+uniform vec4 u_plane = vec4(0, -1, 0, 15);
+
 void main() {
     vec4 worldPosition = u_Translation * vert_Position;
 
+    // Distance of the vertex from the plane
+    gl_ClipDistance[0] = dot(worldPosition, u_plane);
+
     frag_UV = vert_UV;
     frag_Normal = u_Translation * vert_Normal;
+    // Point light
     frag_TowardsLight = u_lightPosition - worldPosition.xyz;
+    // Direction light
+    frag_TowardsLight = vec3(0.0f, 1.0f, 0.0f);
     // "(inverse(u_View) * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz" this gives us camera position
     frag_towardsCamera = (inverse(u_View) * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz - worldPosition.xyz;
 

@@ -24,10 +24,11 @@ public:
     void loadViewMatrix(glm::mat4 viewMatrix);
     void loadLight(Light light);
     void loadShineVariables(float damper, float reflectivity);
+    void loadClipPlane(glm::vec4 plane);
 
 private:
-    constexpr static const char* VERTEX_FILE = "shaders/vert.glsl";
-    constexpr static const char* FRAGMENT_FILE = "shaders/frag.glsl";
+    const char* VERTEX_FILE = "shaders/entity.vert.glsl";
+    const char* FRAGMENT_FILE = "shaders/entity.frag.glsl";
     std::map<const char*, GLint> uniformLocations;
 
 
