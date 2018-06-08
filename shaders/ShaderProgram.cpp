@@ -316,3 +316,7 @@ void ShaderProgram::loadMatrix(GLint location, glm::mat4 matrix) {
     glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
+void ShaderProgram::loadint(GLint location, int value) {
+    glUniform1i(location, value);
+}
+

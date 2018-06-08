@@ -51,6 +51,9 @@ public:
 	// Camera View Matrix
 	virtual glm::mat4 getViewMatrix() = 0;
 	virtual glm::mat4 getOrientationMatrix() = 0;
+	virtual const glm::vec3& getPosition() const = 0;
+    virtual void setPosition(const glm::vec3 &position) =0;
+
 
 	// GLFW Input
 	virtual void onMouseButton(GLFWwindow *window, int button, int action, int mods) = 0;
@@ -58,9 +61,16 @@ public:
 
 	// Update Camera
 	virtual void update(float dt) = 0;
+
+	void setInvertPitch(bool invertPitch) {
+		Camera::invertPitch = invertPitch;
+	}
+
 protected:
 	// GLFW Window
 	GLFWwindow *mWindow;
+	bool invertPitch = false;
+
 };
 
 // --------------------------------------------------------------------------------
@@ -73,15 +83,19 @@ public:
 	virtual ~FreeLookCamera() {}
 
 	// Camera View Matrix
-	glm::mat4 getViewMatrix();
-	glm::mat4 getOrientationMatrix();
+	glm::mat4 getViewMatrix() override;
+	glm::mat4 getOrientationMatrix() override;
 
-	// GLFW Input
-	void onMouseButton(GLFWwindow *window, int button, int action, int mods);
-	void onCursorPosition(GLFWwindow *window, double x, double y);
+    const glm::vec3 &getPosition() const override;
+
+    void setPosition(const glm::vec3 &position) override;
+
+    // GLFW Input
+	void onMouseButton(GLFWwindow *window, int button, int action, int mods) override;
+	void onCursorPosition(GLFWwindow *window, double x, double y) override;
 
 	// Update Camera
-	void update(float dt);
+	void update(float dt) override;
 
 	// Movement
 	virtual void moveForward(float x);
@@ -93,6 +107,7 @@ public:
 	virtual void pitch(float angle);
 	virtual void yaw(float angle);
 	virtual void roll(float angle);
+
 protected:
 	// Data Members
 	glm::vec3 mPosition;
@@ -112,9 +127,11 @@ public:
 	virtual ~GimbalFreeLookCamera() {}
 
 	// Rotations
-	void pitch(float angle);
-	void yaw(float angle);
-	void roll(float angle);
+	void pitch(float angle) override;
+	void yaw(float angle) override;
+	void roll(float angle) override;
+
+
 private:
 	// Data Members
 	float mViewAngleX, mViewAngleY;

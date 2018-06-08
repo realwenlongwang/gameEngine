@@ -66,6 +66,7 @@ protected:
     void loadVec4(GLint location, glm::vec4 value);
     void loadBoolean(GLint location, bool value);
     void loadMatrix(GLint location, glm::mat4 matrix);
+    void loadint(GLint location, int value);
 private:
     std::map<const char*, GLuint> shaders;
 

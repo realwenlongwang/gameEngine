@@ -14,6 +14,8 @@ public:
     void loadProjectionMatrix(glm::mat4 projectionMatrix);
     void loadViewMatrix(Camera *camera);
     void loadModelMatrix(glm::mat4 modelMatrix);
+    void connectTextureUnits();
+    void loadMoveFactor(float moveFactor);
 
 protected:
     void getAllUniformLocation() override;

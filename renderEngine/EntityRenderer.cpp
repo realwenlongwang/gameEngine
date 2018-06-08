@@ -38,13 +38,13 @@ void EntityRenderer::unbindTexturedModel() {
 }
 
 void EntityRenderer::prepareInstance(Entity entity) {
-    glm::mat4 translationMatrix = glm::translate(glm::mat4(),              entity.getPosition()) *
+    glm::mat4 transformationMatrix = glm::translate(glm::mat4(),              entity.getPosition()) *
                                   glm::rotate(   glm::mat4(), entity.getRotation().x, glm::vec3(1.0f, 0.0f, 0.0f)) *
                                   glm::rotate(   glm::mat4(), entity.getRotation().y, glm::vec3(0.0f, 1.0f, 0.0f)) *
                                   glm::rotate(   glm::mat4(), entity.getRotation().z, glm::vec3(0.0f, 0.0f, 1.0f)) *
                                   glm::scale (   glm::mat4(), glm::vec3(entity.getScale()));
 
-    shader.loadTransformationMatrix(translationMatrix);
+    shader.loadTransformationMatrix(transformationMatrix);
 }
 
 void EntityRenderer::setProjectionMatrix(const glm::mat4 &projectionMatrix) {

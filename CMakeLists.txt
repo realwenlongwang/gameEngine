@@ -70,7 +70,7 @@ set(
 set(
         GUI
 
-        gui/GuiTxeture.cpp gui/GuiTxeture.h)
+        gui/GuiTexture.cpp gui/GuiTexture.h gui/GuiRenderer.cpp gui/GuiRenderer.h gui/GuiShader.cpp gui/GuiShader.h)
 
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR})

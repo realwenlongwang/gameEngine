@@ -44,21 +44,24 @@
 #include "MasterRenderer.h"
 #include "WaterFrameBuffers.h"
 #include "WaterRenderer.h"
+#include "GuiRenderer.h"
 
 
 // Camera
-Camera *camera;
+Camera *camera, *invertedPitchCamera;
 // --------------------------------------------------------------------------------
 // Mouse Input
 // --------------------------------------------------------------------------------
 void onMouseButton(GLFWwindow *window, int button, int action, int mods) {
     // Update Camera
     camera->onMouseButton(window, button, action, mods);
+    invertedPitchCamera->onMouseButton(window, button, action, mods);
 }
 
 void onCursorPosition(GLFWwindow *window, double x, double y) {
     // Update Camera
     camera->onCursorPosition(window, x, y);
+    invertedPitchCamera->onCursorPosition(window, x, y);
 }
 
 int main() {
@@ -81,6 +84,8 @@ int main() {
     _OBJLoader objLoader;
 
     camera = new GimbalFreeLookCamera(window);
+    invertedPitchCamera = new GimbalFreeLookCamera(window);
+    invertedPitchCamera->setInvertPitch(true);
     // ----------------------------------------
     // Initialise OpenGL
     // ----------------------------------------
@@ -99,7 +104,7 @@ int main() {
     Entity entity(texturedModel, glm::vec3(0, 0, -5), glm::vec3(0, 0, 0), 1);
     Terrain terrain(- 0.1f, -0.1f, loader, ModelTexture(loader.loadTerrainTexture("res/grass.jpg")));
     WaterShader waterShader;
-    Water waterTile(1, 40, -40);
+    Water waterTile(1, 10, -10);
 
 
 
@@ -116,8 +121,18 @@ int main() {
 
     Light light(glm::vec3(0, 0, 5), glm::vec3(1));
 
+    // ----------------------------------------
+    // Create GUI
+    // ----------------------------------------
+    std::vector<GuiTexture> guiTextures;
+    GuiTexture gui0(waterFrameBuffers.getReflectionTexture(), glm::vec2(-0.5f, 0.5f), glm::vec2(0.25f, 0.25f));
+    GuiTexture gui1(waterFrameBuffers.getRefractionTexture(), glm::vec2(0.5f, 0.5f), glm::vec2(0.25f, 0.25f));
+    guiTextures.push_back(gui0);
+    guiTextures.push_back(gui1);
+
     MasterRenderer masterRenderer(loader);
-    WaterRenderer waterRenderer(loader, waterShader);
+    GuiRenderer guiRenderer(loader);
+    WaterRenderer waterRenderer(loader, waterShader, waterFrameBuffers);
     waterRenderer.setProjectionMatrix(masterRenderer.getProjectionMatrix());
 
     float time = glfwGetTime();
@@ -134,15 +149,27 @@ int main() {
         glEnable(GL_CLIP_DISTANCE0);
 
 //        entity.increaseRotation(0, dt, 0);
-        camera->update(dt);
+
 
         waterFrameBuffers.bindReflectionFrameBuffer();
-        masterRenderer.renderScene(entities, terrains, light, camera, glm::vec4(0, -1, 0, 15));
-        waterFrameBuffers.unbindCurrentFrameBuffer();
+        //TODO: Two cameras are used here, can we make it one.
+        glm::vec3 originalPosition = camera->getPosition();
+        float distance = 2 * (originalPosition.y - waterTile.getHeight());
+        invertedPitchCamera->setPosition(glm::vec3(originalPosition.x, originalPosition.y - distance, originalPosition.z));
+        masterRenderer.renderScene(entities, terrains, light, invertedPitchCamera, glm::vec4(0, 1, 0, -waterTile.getHeight()));
 
-        masterRenderer.renderScene(entities, terrains, light, camera, glm::vec4(0, -1, 0, 5));
+
+        waterFrameBuffers.bindRefractionFrameBuffer();
+        masterRenderer.renderScene(entities, terrains, light, camera, glm::vec4(0, -1, 0, waterTile.getHeight()));
+        waterFrameBuffers.unbindCurrentFrameBuffer();
+        glDisable(GL_CLIP_DISTANCE0);
+
+        invertedPitchCamera->update(dt);
+        camera->update(dt);
+        masterRenderer.renderScene(entities, terrains, light, camera, glm::vec4(0, -1, 0, 1000));
         waterRenderer.render(water, camera);
 
+        guiRenderer.render(guiTextures);
         // Swap the back and front buffers
         glfwSwapBuffers(window);
 
@@ -150,6 +177,7 @@ int main() {
         glfwPollEvents();
 
     }
+    guiRenderer.cleanUp();
     waterShader.cleanUp();
     waterFrameBuffers.cleanUp();
     masterRenderer.cleanUp();

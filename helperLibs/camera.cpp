@@ -25,6 +25,10 @@ glm::mat4 FreeLookCamera::getViewMatrix() {
 	glm::vec3 forward = glm::vec3(mOrientation * glm::vec4( 0,  0, -1,  0));
 	glm::vec3 up      = glm::vec3(mOrientation * glm::vec4( 0,  1,  0,  0));
 
+	if(invertPitch){
+//	    up = -up;
+	}
+
 	// Generate View Matrix
 	return glm::lookAt(mPosition, mPosition + forward, up);
 }
@@ -167,6 +171,14 @@ void FreeLookCamera::roll(float angle) {
 	mOrientation = glm::quat(cos(angle/2.0f), forward * glm::sin(angle/2.0f)) * mOrientation;
 }
 
+const glm::vec3 &FreeLookCamera::getPosition() const {
+	return mPosition;
+}
+
+void FreeLookCamera::setPosition(const glm::vec3 &position) {
+	FreeLookCamera::mPosition = position;
+}
+
 // --------------------------------------------------------------------------------
 // Gimbal Free Look Camera
 // --------------------------------------------------------------------------------
@@ -180,7 +192,12 @@ GimbalFreeLookCamera::GimbalFreeLookCamera(GLFWwindow *window) : FreeLookCamera(
 // Rotations
 void GimbalFreeLookCamera::pitch(float angle) {
 	// Update View Angle X
-	mViewAngleX += angle;
+	if(invertPitch){
+		mViewAngleX -= angle;
+	} else {
+		mViewAngleX += angle;
+	}
+
 
 	// Bounds on View Angle X
 	if(mViewAngleX < -glm::pi<float>() / 2.0f) {
@@ -204,3 +221,4 @@ void GimbalFreeLookCamera::yaw(float angle) {
 void GimbalFreeLookCamera::roll(float angle) {
 	// No Roll for Gimbal Free Look Camera
 }
+
