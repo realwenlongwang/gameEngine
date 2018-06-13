@@ -14,7 +14,7 @@
 #include "Loader.h"
 #include "ShaderProgram.h"
 
-class _OBJLoader {
+class OBJLoader {
 public:
     RawModel loadObjModel(const char *fileName, Loader loader);
 

@@ -23,7 +23,11 @@ const float shineDamper = 5.0f;
 const float reflectivity = 0.5f;
 // TODO: Consider to make them uniform, params in MasterRender
 const float nearPlane = 0.2f;
-const float farPlane = 500.0f;
+const float farPlane = 100.0f;
+
+// Refractive indices
+const float airRefractiveIndex = 1.0f;
+const float waterRefractiveIndex = 1.33f;
 void main(void) {
     // Get the device space coordinates and divided by 2 add 0.5 to put the origin from middle of display to the bottom left
     vec2 normalisedDeviceSpace = (frag_ClipSpace.xy/ frag_ClipSpace.w)/ 2.0f + 0.5f;
@@ -57,8 +61,8 @@ void main(void) {
 
 
     reflectionCoordinates += totalDistortion;
-    reflectionCoordinates.x = clamp(reflectionCoordinates.x, 0.001f, 0.999f);
-    reflectionCoordinates.y = clamp(reflectionCoordinates.y, -0.999f, -0.001f);
+    reflectionCoordinates.x = clamp(reflectionCoordinates.x, 0.01f, 0.99f);
+    reflectionCoordinates.y = clamp(reflectionCoordinates.y, -0.99f, -0.01f);
 
     refractionCoordinates += totalDistortion;
     refractionCoordinates = clamp(refractionCoordinates, 0.001, 0.999);
@@ -71,18 +75,35 @@ void main(void) {
     // Change the x, z value from [0, 1] to [-1, 1], can increase the y component of normal to make water more "calm"
     vec3 normal = vec3(normalMapColour.r * 2.0f - 1.0f, normalMapColour.b, normalMapColour.g * 2.0f - 1.0f);
     vec3 unitNormal = normalize(normal);
-
     vec3 unitTowardsCamera = normalize(frag_TowardsCamera);
-    // As our water is just a x,z face, normal comes from normal map
-    float refractionFactor = dot(unitTowardsCamera, unitNormal);
-    // The higher the reflactive strength is the more reflactive the water is
-    refractionFactor = pow(refractionFactor, reflactiveStrength);
-    refractionFactor = clamp(refractionFactor, 0.0f, 1.0f);
+
+    // ----------------- Simple  linear fresnel approximation ---------------------
+//    // As our water is just a x,z face, normal comes from normal map
+//    float refractionFactor = dot(unitTowardsCamera, unitNormal);
+//    // The higher the reflactive strength is the more reflactive the water is
+//    refractionFactor = pow(refractionFactor, reflactiveStrength);
+//    refractionFactor = clamp(refractionFactor, 0.0f, 1.0f);
+
+    // ----------------------- Schlicks approximation ------------------------
+    // R(theta) = R_0 + (1 - R_0) * (1 - cos(theta))^5
+    // R(theta): Probability of reflection when the incident ray angle is theta
+    // R_0: Probability of reflection on normal incidence, aka theta=0
+    // R_0 = ((n_1 - n_2)/ (n_1 + n_2))^2
+
+    // n_1, n_2 are the refractive indices of materials
 
 
-    vec3 unitFormLight = normalize(frag_FromLight);
+    float cosTheta = dot(unitTowardsCamera, unitNormal);
+    float minimalReflection = pow((waterRefractiveIndex - airRefractiveIndex)/ (waterRefractiveIndex + airRefractiveIndex), 2.0f);
+    float reflectionFactor = minimalReflection + (1 - minimalReflection) * pow(( 1 - cosTheta), 5);
+    reflectionFactor = clamp(reflectionFactor, 0.0f, 1.0f);
+    float refractionFactor = 1.0f - reflectionFactor;
+
+
+
+    vec3 unitFromLight = normalize(frag_FromLight);
     // Calculate reflect light
-    vec3 reflectLightDirection = reflect(unitFormLight, unitNormal);
+    vec3 reflectLightDirection = reflect(unitFromLight, unitNormal);
     // Do dot production between reflect light direction and towards camera to see how much light goes to the camera
     float specularFactor = dot(reflectLightDirection, unitTowardsCamera);
     specularFactor = max(specularFactor, 0.0f);
@@ -96,9 +117,9 @@ void main(void) {
 	// Set the water alpha value to the actual water depth
 	pixel_Color.a = waterDepthFactor;
 //	pixel_Color = normalMapColour;
+//    pixel_Color = refractionColour;
 //    pixel_Color = vec4(waterDepth/50.0f);]]
 
-// fresnel term
-// schlicks approximation
+
 
 }

@@ -4,7 +4,7 @@
 
 #include "OBJLoader.h"
 
-RawModel _OBJLoader::loadObjModel(const char *fileName, Loader loader) {
+RawModel OBJLoader::loadObjModel(const char *fileName, Loader loader) {
 
     std::ifstream objFileStream(fileName);
     if(!objFileStream.is_open()) {
@@ -79,7 +79,7 @@ RawModel _OBJLoader::loadObjModel(const char *fileName, Loader loader) {
     return loader.loadToVAO(indices, vertices, uvs, normals);
 }
 
-void _OBJLoader::loadFaces(std::string line, std::vector<int> &vertexIndices, std::vector<int> &uvIndices,
+void OBJLoader::loadFaces(std::string line, std::vector<int> &vertexIndices, std::vector<int> &uvIndices,
                            std::vector<int> &normalIndices) {
     std::string temp;
     int vertexIndex[4] = {-1, -1, -1, -1}, uvIndex[4] = {-1, -1, -1, -1}, normalIndex[4] = {-1, -1, -1, -1};

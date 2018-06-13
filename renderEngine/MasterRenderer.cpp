@@ -45,6 +45,7 @@ void MasterRenderer::processEntity(Entity entity) {
 
 void MasterRenderer::prepare() {
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
     // Set clear (background) colour to black
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     // Clear Screen

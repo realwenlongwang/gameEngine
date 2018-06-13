@@ -34,7 +34,7 @@ public:
 private:
     float FIELD_OF_VIEW = 67.0f;
     float NEAR_PLANE = 0.2f;
-    float FAR_PLANE = 500.0f;
+    float FAR_PLANE = 100.0f;
     glm::mat4 projectionMatrix;
 
     StaticShader staticShader;

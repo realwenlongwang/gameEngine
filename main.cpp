@@ -29,8 +29,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
-
 // Project Headers
 #include "WindowManager.h"
 #include "Loader.h"
@@ -81,18 +79,17 @@ int main() {
 
 
     Loader loader;
-    _OBJLoader objLoader;
-
+    OBJLoader objLoader;
+    // ----------------------------------------
+    // Cameras
+    // ----------------------------------------
     camera = new GimbalFreeLookCamera(window);
     invertedPitchCamera = new GimbalFreeLookCamera(window);
     invertedPitchCamera->setInvertPitch(true);
     // ----------------------------------------
-    // Initialise OpenGL
+    // Polygon mode (DEBUG)
     // ----------------------------------------
-    glDepthFunc(GL_LEQUAL);
-    glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
     // ----------------------------------------
     // Create object
     // ----------------------------------------
@@ -105,7 +102,6 @@ int main() {
     Terrain terrain(-0.1f, -0.1f, loader, ModelTexture(loader.loadTerrainTexture("res/grass.jpg")));
     WaterShader waterShader;
     Water waterTile(1, 0, -5);
-
 
 
     // Container
@@ -122,7 +118,7 @@ int main() {
     Light sun(glm::vec3(-50, 50, -50), glm::vec3(1));
 
     // ----------------------------------------
-    // Create GUI
+    // Create GUI (DEBUG)
     // ----------------------------------------
     std::vector<GuiTexture> guiTextures;
     GuiTexture gui0(waterFrameBuffers.getReflectionTexture(), glm::vec2(-0.5f, 0.5f), glm::vec2(0.25f, 0.25f));
@@ -130,6 +126,9 @@ int main() {
     guiTextures.push_back(gui0);
     guiTextures.push_back(gui1);
 
+    // ----------------------------------------
+    // Create Renderers
+    // ----------------------------------------
     MasterRenderer masterRenderer(loader);
     GuiRenderer guiRenderer(loader);
     WaterRenderer waterRenderer(loader, waterShader, waterFrameBuffers);
@@ -137,6 +136,9 @@ int main() {
 
     float time = glfwGetTime();
 
+    // ----------------------------------------
+    // Main render loop
+    // ----------------------------------------
     while (!glfwWindowShouldClose(window)) {
         // Make the context of the given window current on the calling thread
         glfwMakeContextCurrent(window);
@@ -145,10 +147,10 @@ int main() {
         float dt = current_time - time;
         time = current_time;
 
+        //        entity.increaseRotation(0, dt, 0);
+
         // Enable the clip planes
         glEnable(GL_CLIP_DISTANCE0);
-
-//        entity.increaseRotation(0, dt, 0);
 
         waterFrameBuffers.bindReflectionFrameBuffer();
         //TODO: Two cameras are used here, can we make it one.
@@ -176,6 +178,9 @@ int main() {
         glfwPollEvents();
 
     }
+    // ----------------------------------------
+    // Clean up resources
+    // ----------------------------------------
     guiRenderer.cleanUp();
     waterShader.cleanUp();
     waterFrameBuffers.cleanUp();

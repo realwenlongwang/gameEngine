@@ -26,5 +26,7 @@ void SkyboxRenderer::prepareRawModel(Skybox skybox) {
     glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.getSkyboxTexture());
 }
 
-SkyboxRenderer::SkyboxRenderer(const SkyboxShader &skyboxShader) : skyboxShader(skyboxShader) {}
+SkyboxRenderer::SkyboxRenderer(const SkyboxShader &skyboxShader) : skyboxShader(skyboxShader) {
+    glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+}
 

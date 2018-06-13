@@ -9,7 +9,7 @@ void WindowManager::prepare() {
     glfwSetErrorCallback(onError);
 
     // Set GLFW Window Hint - Full-Screen Antialiasing 16x
-    glfwWindowHint(GLFW_SAMPLES, 16);
+//    glfwWindowHint(GLFW_SAMPLES, 16);
 
 }
 
@@ -23,7 +23,7 @@ GLFWwindow* WindowManager::createWindow(int width, int height, const char *title
     }
     windows.push_back(window);
     // Anti aliasing
-    glEnable(GL_MULTISAMPLE);
+//    glEnable(GL_MULTISAMPLE);
 
     setUpCallbacks(window);
 
