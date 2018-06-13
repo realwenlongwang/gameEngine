@@ -41,6 +41,15 @@
 // Project Headers
 #include "image.h"
 #include "RawModel.h"
+#include <map>
+
+struct ImageInfo{
+    ImageInfo(int width, int height, int channel) :
+            height(height), width(width), channel(channel){}
+    int height;
+    int width;
+    int channel;
+};
 
 
 class Loader {
@@ -51,6 +60,8 @@ public:
     GLuint loadTexture(const char* fileName);
     GLuint loadTerrainTexture(const char* fileName);
     GLuint loadCubeMap(const char* fileNames[6]);
+
+    const std::map<const char *, ImageInfo> &getTextureInfoMap() const;
 
     void cleanUp();
 private:
@@ -65,6 +76,7 @@ private:
     std::vector<GLuint> ebos;
     // Textures
     std::vector<GLuint> textures;
+    std::map<const char*, ImageInfo> textureInfoMap;
 
     GLuint initialiseVAO();
     void bindIndicesBuffer(std::vector<glm::ivec3> indices);

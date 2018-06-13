@@ -5,16 +5,16 @@
 #include "Terrain.h"
 #include <utility>
 
-Terrain::Terrain(float gridX, float gridZ, Loader loader, const ModelTexture &texture) : texture(texture) {
+Terrain::Terrain(float gridX, float gridZ, Loader loader, const ModelTexture &texture)
+        : texture(texture) {
     x = gridX * SIZE;
     z = gridZ * SIZE;
     rawModel = generateTerrain(std::move(loader));
 }
 
-RawModel Terrain::generateTerrain(Loader loader){
-    int count = VERTEX_COUNT * VERTEX_COUNT;
-    std::vector<glm::vec4> vertices, normals, uvs;
+RawModel Terrain::generateTerrain(Loader loader) {
 
+    std::vector<glm::vec4> vertices, normals, uvs;
 
     std::vector<glm::ivec3> indices;
 
@@ -31,7 +31,6 @@ RawModel Terrain::generateTerrain(Loader loader){
         }
     }
 
-    int pointer = 0;
     for(int gz=0;gz<VERTEX_COUNT-1;gz++){
         for(int gx=0;gx<VERTEX_COUNT-1;gx++){
             int topLeft = (gz*VERTEX_COUNT)+gx;

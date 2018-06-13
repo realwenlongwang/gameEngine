@@ -18,14 +18,15 @@ public:
     WaterRenderer(Loader loader, const WaterShader &waterShader, WaterFrameBuffers waterFrameBuffers);
 
     void setProjectionMatrix(const glm::mat4 &projectionMatrix);
-    void render(std::vector<Water> water, Camera *camera);
+    void render(std::vector<Water> water, Camera *camera, Light light);
 private:
     const char* DUDV_MAP = "res/waterDUDV.png";
+    const char* NORMAL_MAP = "res/matchingNormalMap.png";
     const float WAVE_SPEED = 0.03f;
 
     float moveFactor = 0.0f;
 
-    GLuint dudvTexture;
+    GLuint dudvTexture, normalTexture;;
     RawModel quad = RawModel(0, 0);
     WaterShader waterShader;
     glm::mat4 projectionMatrix;
@@ -33,7 +34,7 @@ private:
 
     void setUpVAO(Loader loader);
 
-    void prepareRender(Camera *pCamera);
+    void prepareRender(Camera *pCamera, Light light);
 
     void unbind();
 };

@@ -7,7 +7,7 @@
 
 #include "ShaderProgram.h"
 #include "camera.h"
-
+#include "Light.h"
 class WaterShader: public ShaderProgram {
 public:
     WaterShader();
@@ -16,6 +16,8 @@ public:
     void loadModelMatrix(glm::mat4 modelMatrix);
     void connectTextureUnits();
     void loadMoveFactor(float moveFactor);
+    void loadLight(Light light);
+    void loadProjectParams(float nearPlane, float farPlane);
 
 protected:
     void getAllUniformLocation() override;

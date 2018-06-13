@@ -24,6 +24,8 @@ private:
     constexpr static float SIZE = 800;
     constexpr static int VERTEX_COUNT = 128;
 
+    GLint heightTexture;
+
     float x;
     float z;
 

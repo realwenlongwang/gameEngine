@@ -102,9 +102,9 @@ int main() {
     modelTexture.setShineDamper(10);
     TexturedModel texturedModel(rawModel, modelTexture);
     Entity entity(texturedModel, glm::vec3(0, 0, -5), glm::vec3(0, 0, 0), 1);
-    Terrain terrain(- 0.1f, -0.1f, loader, ModelTexture(loader.loadTerrainTexture("res/grass.jpg")));
+    Terrain terrain(-0.1f, -0.1f, loader, ModelTexture(loader.loadTerrainTexture("res/grass.jpg")));
     WaterShader waterShader;
-    Water waterTile(1, 10, -10);
+    Water waterTile(1, 0, -5);
 
 
 
@@ -119,7 +119,7 @@ int main() {
 
     WaterFrameBuffers waterFrameBuffers;
 
-    Light light(glm::vec3(0, 0, 5), glm::vec3(1));
+    Light sun(glm::vec3(-50, 50, -50), glm::vec3(1));
 
     // ----------------------------------------
     // Create GUI
@@ -150,24 +150,23 @@ int main() {
 
 //        entity.increaseRotation(0, dt, 0);
 
-
         waterFrameBuffers.bindReflectionFrameBuffer();
         //TODO: Two cameras are used here, can we make it one.
         glm::vec3 originalPosition = camera->getPosition();
         float distance = 2 * (originalPosition.y - waterTile.getHeight());
         invertedPitchCamera->setPosition(glm::vec3(originalPosition.x, originalPosition.y - distance, originalPosition.z));
-        masterRenderer.renderScene(entities, terrains, light, invertedPitchCamera, glm::vec4(0, 1, 0, -waterTile.getHeight()));
+        masterRenderer.renderScene(entities, terrains, sun, invertedPitchCamera, glm::vec4(0, 1, 0, -waterTile.getHeight()));
 
 
         waterFrameBuffers.bindRefractionFrameBuffer();
-        masterRenderer.renderScene(entities, terrains, light, camera, glm::vec4(0, -1, 0, waterTile.getHeight()));
+        masterRenderer.renderScene(entities, terrains, sun, camera, glm::vec4(0, -1, 0, waterTile.getHeight()));
         waterFrameBuffers.unbindCurrentFrameBuffer();
         glDisable(GL_CLIP_DISTANCE0);
 
         invertedPitchCamera->update(dt);
         camera->update(dt);
-        masterRenderer.renderScene(entities, terrains, light, camera, glm::vec4(0, -1, 0, 1000));
-        waterRenderer.render(water, camera);
+        masterRenderer.renderScene(entities, terrains, sun, camera, glm::vec4(0, -1, 0, 1000));
+        waterRenderer.render(water, camera, sun);
 
         guiRenderer.render(guiTextures);
         // Swap the back and front buffers

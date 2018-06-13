@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(waterRendering)
+project(gameEngine)
 
 find_package(PkgConfig REQUIRED)
 find_package(OpenGL REQUIRED)
@@ -75,6 +75,6 @@ set(
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR})
 
-add_executable(waterRendering main.cpp ${RENDER_ENGINE} ${HELPER_LIBS} ${MODELS} ${TEXTURES} ${SHADERS} ${ENTITIES} ${TERRAIN} ${SKYBOX} ${WATER} ${GUI})
+add_executable(gameEngine main.cpp ${RENDER_ENGINE} ${HELPER_LIBS} ${MODELS} ${TEXTURES} ${SHADERS} ${ENTITIES} ${TERRAIN} ${SKYBOX} ${WATER} ${GUI})
 
-target_link_libraries(waterRendering ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
+target_link_libraries(gameEngine ${GLFW_LIBRARIES} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})

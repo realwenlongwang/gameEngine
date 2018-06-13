@@ -7,7 +7,8 @@
 
 WaterRenderer::WaterRenderer(Loader loader, const WaterShader &waterShader, WaterFrameBuffers waterFrameBuffers)
         : waterShader(waterShader), waterFrameBuffers(waterFrameBuffers) {
-    dudvTexture = loader.loadTexture(DUDV_MAP);
+    dudvTexture = loader.loadTerrainTexture(DUDV_MAP);
+    normalTexture = loader.loadTerrainTexture(NORMAL_MAP);
     setUpVAO(std::move(loader));
 }
 
@@ -27,8 +28,8 @@ void WaterRenderer::setProjectionMatrix(const glm::mat4 &projectionMatrix) {
     waterShader.stop();
 }
 
-void WaterRenderer::render(std::vector<Water> water, Camera *camera) {
-    prepareRender(camera);
+void WaterRenderer::render(std::vector<Water> water, Camera *camera, Light light) {
+    prepareRender(camera, light);
     for(Water waterTile: water) {
         glm::mat4 translationMatrix = glm::translate(glm::mat4(), glm::vec3(waterTile.getX(), waterTile.getHeight(), waterTile.getZ())) *
                                       glm::scale (   glm::mat4(), glm::vec3(waterTile.TILE_SIZE));
@@ -38,14 +39,18 @@ void WaterRenderer::render(std::vector<Water> water, Camera *camera) {
     unbind();
 }
 
-void WaterRenderer::prepareRender(Camera *pCamera) {
+void WaterRenderer::prepareRender(Camera *pCamera, Light light) {
     waterShader.start();
     waterShader.loadViewMatrix(pCamera);
-    moveFactor = sin(WAVE_SPEED * glfwGetTime());
+    // TODO: sin function seems will cause the wave change direction periodically
+    moveFactor += 0.0001f;
+//    moveFactor = (sin(WAVE_SPEED * glfwGetTime()) + 1.0f) / 2.0f;
+//    moveFactor += WAVE_SPEED * glfwGetTime(); //* 0.0005;
+//    moveFactor += sin(WAVE_SPEED * glfwGetTime());
+//    moveFactor = fmod(moveFactor, 1.0f);
 //    std::cout << moveFactor << std::endl;
-//    if(moveFactor > 1.0f) moveFactor = 0.0f;
-    // TODO: move factor doesn't work properly
     waterShader.loadMoveFactor(moveFactor);
+    waterShader.loadLight(light);
     glBindVertexArray(quad.getVao());
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, waterFrameBuffers.getReflectionTexture());
@@ -53,9 +58,17 @@ void WaterRenderer::prepareRender(Camera *pCamera) {
     glBindTexture(GL_TEXTURE_2D, waterFrameBuffers.getRefractionTexture());
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, dudvTexture);
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, normalTexture);
+    glActiveTexture(GL_TEXTURE4);
+    glBindTexture(GL_TEXTURE_2D, waterFrameBuffers.getRefractionDepthTexture());
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void WaterRenderer::unbind() {
+    glDisable(GL_BLEND);
     glBindVertexArray(0);
     waterShader.stop();
 }

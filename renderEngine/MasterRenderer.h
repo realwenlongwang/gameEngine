@@ -43,6 +43,7 @@ private:
     EntityRenderer entityRenderer;
     TerrainRenderer terrainRenderer;
     SkyboxRenderer skyboxRenderer;
+
     std::map<TexturedModel, std::vector<Entity>, TexturedModelCompare> entityMap;
     std::vector<Terrain> terrains;
     Skybox skybox;

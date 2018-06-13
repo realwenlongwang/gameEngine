@@ -19,7 +19,7 @@ out vec3 frag_TowardsLight;
 out vec3 frag_towardsCamera;
 
 // Horizontal plane, (A, B, C, D) "A, B ,C is the normal of plane" "D is the height of plane"
-uniform vec4 u_plane = vec4(0, -1, 0, 15);
+uniform vec4 u_plane;
 
 void main() {
     vec4 worldPosition = u_Translation * vert_Position;
@@ -32,9 +32,10 @@ void main() {
     // Point light
     frag_TowardsLight = u_lightPosition - worldPosition.xyz;
     // Direction light
-    frag_TowardsLight = vec3(0.0f, 1.0f, 0.0f);
-    // "(inverse(u_View) * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz" this gives us camera position
-    frag_towardsCamera = (inverse(u_View) * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz - worldPosition.xyz;
+//    frag_TowardsLight = vec3(0.0f, 1.0f, 0.0f);
+
+    vec3 camerPosition = (inverse(u_View) * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+    frag_towardsCamera = camerPosition - worldPosition.xyz;
 
 	//----------------------------------------------
 	// Vertex Position

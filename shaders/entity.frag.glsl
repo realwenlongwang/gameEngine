@@ -13,6 +13,13 @@ uniform float reflectivity;
 // Output from Fragment Shader RGBA colour
 out vec4 pixel_Colour;
 
+// Material - Pearl
+const vec4 Ka = vec4(0.25,     0.20725,  0.20725,  1.0);
+
+// Light Source
+const vec4 Ia = vec4(0.5f, 0.5f, 0.5f, 1.0f);
+
+
 void main () {
     // Normalise the vector to make sure unit vector
     vec3 unitNormal = normalize(frag_Normal.xyz);
@@ -37,11 +44,14 @@ void main () {
     float dampedFactor = pow(specularFactor, shineDamper);
 
     vec3 finalSpecular = dampedFactor * reflectivity * lightColour;
+
+    // Ambient term
+    vec4 ambientTerm = Ka * Ia;
 	//----------------------------------------------
 	// Fragment Colour
 	//----------------------------------------------
 	pixel_Colour = texture(textureSampler, frag_UV.xy);
 	pixel_Colour = vec4(vec3(1.0), 0.0);
 	//TODO: Here need to muptiply by the texture, later can change to phone lighting
-	pixel_Colour = vec4(diffuse, 1.0f)  + vec4(finalSpecular, 1.0f);
+	pixel_Colour = ambientTerm + vec4(diffuse, 1.0f)  + vec4(finalSpecular, 1.0f);
 }
